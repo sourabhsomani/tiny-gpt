@@ -1,7 +1,7 @@
 // Checks that the JavaScript model gives the same numbers as PyTorch.
 // Run after `python src/export.py`:   node tests/parity.mjs
 import { readFileSync } from "node:fs";
-import { TinyGPT } from "../docs/gpt.js";
+import { TinyGPT } from "../docs/model.js";
 
 const meta = JSON.parse(readFileSync("docs/model/config.json", "utf8"));
 const bin = readFileSync("docs/model/weights.bin");
