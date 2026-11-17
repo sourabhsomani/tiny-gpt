@@ -1,0 +1,115 @@
+:root {
+  --bg: #f6f4ef;
+  --panel: #ffffff;
+  --text: #22201c;
+  --muted: #77726a;
+  --accent: #2f5d50;
+  --accent-text: #ffffff;
+  --border: #e2ded5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171614;
+    --panel: #22211e;
+    --text: #ece9e2;
+    --muted: #9a958b;
+    --accent: #6fae9b;
+    --accent-text: #10201b;
+    --border: #34322d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0 auto;
+  padding: 16px;
+  max-width: 720px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+header h1 { margin: 8px 0 0; font-size: 1.6rem; }
+header p, footer { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+#chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 240px;
+}
+
+.note { color: var(--muted); text-align: center; margin: auto; }
+
+.msg {
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.msg.user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.msg.bot {
+  align-self: flex-start;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.msg.bot .echo { color: var(--muted); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chips button {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+#composer { display: flex; gap: 8px; }
+
+#prompt {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  resize: none;
+}
+
+#send {
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled, textarea:disabled { opacity: 0.5; cursor: default; }
+
+.settings { color: var(--muted); font-size: 0.9rem; }
+.settings label { display: block; margin-top: 8px; }
+.settings input { display: block; width: 100%; accent-color: var(--accent); }

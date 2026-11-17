@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TinyGPT</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>TinyGPT</h1>
+    <p>A GPT trained from scratch on three classic books. It runs entirely in your browser.</p>
+  </header>
+
+  <main id="chat" aria-live="polite">
+    <div class="note" id="status">Loading model…</div>
+  </main>
+
+  <div class="chips" id="chips">
+    <button type="button">Alice looked at the</button>
+    <button type="button">"My dear Watson," said</button>
+    <button type="button">Mr. Darcy was</button>
+  </div>
+
+  <form id="composer">
+    <textarea id="prompt" rows="1" placeholder="Start a sentence…" disabled></textarea>
+    <button id="send" type="submit" disabled>Send</button>
+  </form>
+
+  <details class="settings">
+    <summary>Settings</summary>
+    <label>Creativity <output id="tempOut">0.8</output>
+      <input id="temp" type="range" min="0.2" max="1.5" step="0.1" value="0.8">
+    </label>
+    <label>Length <output id="lenOut">300</output>
+      <input id="len" type="range" min="50" max="1000" step="50" value="300">
+    </label>
+  </details>
+
+  <footer>
+    This is a very small model (under a million parameters). It writes in the
+    style of its books; it does not understand questions.
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
