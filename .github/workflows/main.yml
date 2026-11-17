@@ -1,0 +1,102 @@
+name: Build and deploy to GitHub Pages
+
+on:
+  # every push to main: test the model and publish the chat page
+  push:
+    branches: [main]
+  # manual run from the Actions tab, with an option to retrain first
+  workflow_dispatch:
+    inputs:
+      retrain:
+        description: "Train the model again before deploying"
+        type: boolean
+        default: false
+      iters:
+        description: "Training steps (used only when retraining)"
+        type: number
+        default: 2500
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        if: ${{ inputs.retrain }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install PyTorch (CPU version)
+        if: ${{ inputs.retrain }}
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy
+
+      - name: Prepare the books
+        if: ${{ inputs.retrain }}
+        run: python src/prepare.py
+
+      - name: Train the model
+        if: ${{ inputs.retrain }}
+        env:
+          ITERS: ${{ inputs.iters }}
+        run: python src/train.py --iters "$ITERS" | tee train.log
+
+      - name: Export weights for the browser
+        if: ${{ inputs.retrain }}
+        run: python src/export.py
+
+      - name: Show a sample from the model
+        if: ${{ inputs.retrain }}
+        run: python src/sample.py --prompt "Sourabh was" --chars 300
+
+      - name: Check the JavaScript model matches PyTorch
+        run: node tests/parity.mjs
+
+      - name: Save the trained model as a download
+        if: ${{ inputs.retrain }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: trained-model
+          path: |
+            out/ckpt.pt
+            train.log
+            docs/model/
+            tests/fixture.json
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the chat page
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
