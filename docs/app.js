@@ -1,4 +1,4 @@
-import { TinyGPT } from "./gpt.js";
+import { TinyGPT } from "./model.js";
 
 const chat = document.getElementById("chat");
 const status = document.getElementById("status");
